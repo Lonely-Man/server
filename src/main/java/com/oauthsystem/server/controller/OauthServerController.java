@@ -32,8 +32,7 @@ public class OauthServerController {
         if(oauthClient==null){
             return ApiResult.buildFailApiResult(code,message);
         }
-
-
+        redisTemplate.opsForValue().set(data,oauthClient.getClientId(),30,TimeUnit.MINUTES);
         return  ApiResult.buildSuccessApiResult(codeToken,message,data,total);
     }
     @PostMapping("/getToken")
@@ -45,6 +44,7 @@ public class OauthServerController {
         if(!redisTemplate.hasKey(codeToken)){
             return  ApiResult.buildFailApiResult(code,message);
         }
+        redisTemplate.expire(data,30,TimeUnit.MINUTES);
 
         return  ApiResult.buildSuccessApiResult(code,message,data,total);
     }
